@@ -735,6 +735,37 @@ kbd {
   border-radius: 6px;
 }
 
+.article-badge {
+  background: var(--gold-primary);
+  color: #0b0d13;
+  font-family: var(--font-greek);
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0.12rem 0.55rem;
+  border-radius: 6px;
+}
+
+.art-inline {
+  color: var(--gold-primary);
+  font-weight: 700;
+  margin-right: 0.18em;
+}
+
+.wheel-item.is-center .art-inline {
+  color: var(--text-primary);
+  background: rgba(212, 175, 55, 0.22);
+  border: 1px solid var(--border-gold);
+  padding: 0.02rem 0.36rem;
+  border-radius: 7px;
+  font-size: 0.82em;
+}
+
+.adj-endings {
+  font-size: 0.78em;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
 .pos-badge {
   background: var(--accent-blue-bg);
   color: var(--accent-blue);

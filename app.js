@@ -24,6 +24,36 @@ function getInitialGreekLetter(word) {
   return 'Α';
 }
 
+// Kelimeyi her zaman artikeliyle (veya sıfat çekim ekleriyle) birlikte döndüren yardımcılar
+function formatWordWithArticlePlain(word) {
+  if (!word) return '';
+  if (word.id === 'oikia') return 'ἡ οἰκία / ὁ οἶκος';
+  if (word.article) {
+    const preArt = word.article === 'τό' ? 'τὸ' : word.article;
+    return `${preArt} ${word.greek}`;
+  }
+  if (word.pos && word.pos.includes('Sıfat')) {
+    return word.fullForm || word.greek;
+  }
+  return word.greek;
+}
+
+function formatWordWithArticleHTML(word) {
+  if (!word) return '';
+  if (word.id === 'oikia') {
+    return `<span class="art-inline">ἡ</span> οἰκία / <span class="art-inline">ὁ</span> οἶκος`;
+  }
+  if (word.article) {
+    const preArt = word.article === 'τό' ? 'τὸ' : word.article;
+    return `<span class="art-inline">${preArt}</span> ${word.greek}`;
+  }
+  if (word.pos && word.pos.includes('Sıfat') && word.fullForm && word.fullForm !== word.greek) {
+    const rest = word.fullForm.slice(word.greek.length);
+    return `${word.greek}<span class="adj-endings">${rest}</span>`;
+  }
+  return word.greek;
+}
+
 // ==================== UYGULAMA DURUMU (STATE) ====================
 const STORAGE_KEYS = {
   STATUS: 'genar_greek_word_status_v1',   // { [wordId]: 'memorized' | 'hard' }
@@ -238,7 +268,7 @@ function renderWheel() {
 
     item.innerHTML = `
       <span class="wheel-item-index">#${idx + 1}</span>
-      <span class="wheel-item-greek" lang="el">${word.greek}</span>
+      <span class="wheel-item-greek" lang="el">${formatWordWithArticleHTML(word)}</span>
       <span class="wheel-item-meaning">${word.shortMeaning}</span>
       <span class="wheel-item-status">${statusHtml}</span>
     `;
@@ -269,10 +299,18 @@ function renderDetail() {
   document.getElementById('detailLetterBadge').textContent = getInitialGreekLetter(word.greek);
   document.getElementById('detailPosBadge').textContent = word.pos || 'Kelime';
 
+  const articleBadge = document.getElementById('detailArticleBadge');
+  if (word.article) {
+    articleBadge.textContent = `Artikel: ${word.article}`;
+    articleBadge.classList.remove('hidden');
+  } else {
+    articleBadge.classList.add('hidden');
+  }
+
   const courseBadge = document.getElementById('detailCourseBadge');
   courseBadge.classList.toggle('hidden', !word.isCourse);
 
-  document.getElementById('detailGreekWord').textContent = word.greek;
+  document.getElementById('detailGreekWord').innerHTML = formatWordWithArticleHTML(word);
   document.getElementById('detailFullForm').textContent = word.fullForm || word.greek;
   document.getElementById('detailPronunciation').textContent = `/${word.pronunciation || stripGreekDiacritics(word.greek)}/`;
   document.getElementById('detailShortMeaning').textContent = word.shortMeaning;
@@ -304,11 +342,11 @@ function renderDetail() {
   const prevCard = document.getElementById('neighborPrevCard');
   const nextCard = document.getElementById('neighborNextCard');
 
-  document.getElementById('neighborCurrentGreek').textContent = word.greek;
+  document.getElementById('neighborCurrentGreek').textContent = formatWordWithArticlePlain(word);
 
   if (prevWord) {
     prevCard.disabled = false;
-    document.getElementById('neighborPrevGreek').textContent = `#${idx} ${prevWord.greek}`;
+    document.getElementById('neighborPrevGreek').textContent = `#${idx} ${formatWordWithArticlePlain(prevWord)}`;
     document.getElementById('neighborPrevMeaning').textContent = prevWord.shortMeaning;
   } else {
     prevCard.disabled = true;
@@ -318,7 +356,7 @@ function renderDetail() {
 
   if (nextWord) {
     nextCard.disabled = false;
-    document.getElementById('neighborNextGreek').textContent = `#${idx + 2} ${nextWord.greek}`;
+    document.getElementById('neighborNextGreek').textContent = `#${idx + 2} ${formatWordWithArticlePlain(nextWord)}`;
     document.getElementById('neighborNextMeaning').textContent = nextWord.shortMeaning;
   } else {
     nextCard.disabled = true;
@@ -384,14 +422,15 @@ function renderDictionary() {
       <div class="dict-card-top">
         <div>
           <span class="rank-badge">#${index + 1}</span>
+          ${word.article ? `<span class="article-badge" lang="el">${word.article}</span>` : ''}
           <span class="pos-badge">${word.pos || 'Kelime'}</span>
           ${word.isCourse ? '<span class="course-badge">Ders</span>' : ''}
         </div>
         <div>${badgeHtml}</div>
       </div>
       <div>
-        <span class="dict-card-word" lang="el">${word.fullForm || word.greek}</span>
-        <span class="detail-pron"> /${word.pronunciation || ''}/</span>
+        <span class="dict-card-word" lang="el">${formatWordWithArticleHTML(word)}</span>
+        <span class="detail-pron"> (${word.fullForm || word.greek}) • /${word.pronunciation || ''}/</span>
       </div>
       <div class="dict-card-short">${word.shortMeaning}</div>
       <div class="dict-card-etym">✦ ${word.etymology || ''}</div>
