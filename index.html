@@ -24,12 +24,10 @@
       <!-- Kelime Havuzu Seçici (Ders Kelimelerim vs Genel Sözlük) -->
       <div class="pool-switcher" role="group" aria-label="Kelime Havuzu Seçimi">
         <button id="poolCourseBtn" class="pool-btn" data-pool="course" title="Sadece ders ve sınavlarda sorumlu olduğum kelimeler">
-          <span class="pool-icon">📚</span>
           <span>Ders / Sınav Kelimelerim</span>
           <span id="courseCountBadge" class="badge">0</span>
         </button>
         <button id="poolAllBtn" class="pool-btn active" data-pool="all" title="Temel Eski Yunanca sözlük ve ders kelimeleri bir arada">
-          <span class="pool-icon">🏛️</span>
           <span>Genel Sözlük</span>
           <span id="allCountBadge" class="badge">0</span>
         </button>
@@ -38,10 +36,10 @@
       <!-- Ana Görünüm Modu Seçici (Hafız Modu vs Sözlük Modu) -->
       <div class="mode-switcher" role="group" aria-label="Çalışma Modu Seçimi">
         <button id="modeHafizBtn" class="mode-btn active" data-mode="hafiz">
-          <span>🎡 Hafız Modu</span>
+          <span>Hafız Modu</span>
         </button>
         <button id="modeDictBtn" class="mode-btn" data-mode="dict">
-          <span>📖 Sözlük Modu</span>
+          <span>Sözlük Modu</span>
         </button>
       </div>
 
@@ -52,7 +50,7 @@
           <span id="memorizedStatsText">0 / 0 Ezberlendi</span>
         </div>
         <button id="themeToggleBtn" class="icon-btn" title="Temayı Değiştir (Koyu / Açık)">
-          <span id="themeIcon">🌙</span>
+          <span id="themeIcon">☾</span>
         </button>
       </div>
     </div>
@@ -76,20 +74,20 @@
           <label class="toggle-chip" title="Çarktaki Türkçe anlamları gizler (Boşluk tuşuyla anlık açabilirsiniz)">
             <input type="checkbox" id="hideMeaningsToggle" />
             <span class="chip-box"></span>
-            <span>🙈 Anlamları Gizle</span>
+            <span>Anlamları Gizle</span>
           </label>
           <label class="toggle-chip" title="Sıradaki (alt kısımdaki) kelimeleri bulanıklaştırır, alfabetik sırayı tahmin etmenizi sağlar">
             <input type="checkbox" id="blurNextToggle" />
             <span class="chip-box"></span>
-            <span>🌫️ Sonraki Kelimeleri Bulanıklaştır</span>
+            <span>Sonraki Kelimeleri Bulanıklaştır</span>
           </label>
           <button id="peekBtn" class="peek-btn" title="Gizli anlamı veya bulanık kelimeleri anlık göster (Kısayol: Boşluk Tuşu)">
-            👁️ Anlık Göster <kbd>Boşluk</kbd>
+            Anlık Göster <kbd>Boşluk</kbd>
           </button>
         </div>
 
         <div class="toolbar-right">
-          <span class="wheel-hint">💡 Fare tekerleği, yön tuşları <kbd>↑</kbd><kbd>↓</kbd> veya parmakla kaydırarak çarkı çevirin</span>
+          <span class="wheel-hint">Fare tekerleği, yön tuşları <kbd>↑</kbd><kbd>↓</kbd> veya sürükleyerek çarkı çevirin</span>
         </div>
       </div>
 
@@ -127,7 +125,7 @@
             <div class="chain-Jump">
               <label for="jumpInput">Sıraya Git:</label>
               <input type="number" id="jumpInput" min="1" value="1" class="jump-input" />
-              <button id="randomWordBtn" class="secondary-btn" title="Rastgele bir kelimeye git">🎲 Rastgele</button>
+              <button id="randomWordBtn" class="secondary-btn" title="Rastgele bir kelimeye git">Rastgele</button>
             </div>
           </div>
         </div>
@@ -141,7 +139,7 @@
                 <span id="detailRankBadge" class="rank-badge">#1</span>
                 <span id="detailLetterBadge" class="letter-badge">Α</span>
                 <span id="detailPosBadge" class="pos-badge">İsim</span>
-                <span id="detailCourseBadge" class="course-badge hidden">📚 Ders/Sınav</span>
+                <span id="detailCourseBadge" class="course-badge hidden">Ders / Sınav</span>
               </div>
               <h2 id="detailGreekWord" class="detail-greek-word" lang="el">ἀγαθός</h2>
               <div class="detail-submeta">
@@ -157,7 +155,7 @@
                 <span id="memorizedBtnText">Ezberledim</span>
               </button>
               <button id="markHardBtn" class="status-btn status-hard" data-status="hard" title="Zorlanıyorum / Tekrar et (Kısayol: Z)">
-                <span>🔥 Zor</span>
+                <span>! Zor</span>
               </button>
             </div>
           </div>
@@ -171,7 +169,7 @@
           <!-- 1. BÖLÜM: Detaylı Anlamlar -->
           <div class="detail-card">
             <div class="detail-card-header">
-              <span class="card-icon">📜</span>
+              <span class="card-icon">◈</span>
               <h3>Detaylı Anlamlar &amp; Kullanım Nüansları</h3>
             </div>
             <div id="detailFullMeanings" class="detail-card-body">
@@ -182,7 +180,7 @@
           <!-- 2. BÖLÜM: Etimoloji & Çağrışım (Hafıza Çengeli) -->
           <div class="detail-card etymology-card">
             <div class="detail-card-header">
-              <span class="card-icon">🧠</span>
+              <span class="card-icon">✦</span>
               <h3>Etimoloji &amp; Çağrışım (Hafıza İpucu)</h3>
             </div>
             <div id="detailEtymology" class="detail-card-body">
@@ -193,12 +191,12 @@
           <!-- 3. BÖLÜM: Alfabetik Zincir Komşuları (Önceki & Sonraki Kelime Bağlantısı) -->
           <div class="detail-card chain-card">
             <div class="detail-card-header">
-              <span class="card-icon">🔗</span>
+              <span class="card-icon">↔</span>
               <h3>Alfabetik Hafıza Zinciri (Komşu Kelimeler)</h3>
             </div>
             <div class="chain-neighbors">
               <button id="neighborPrevCard" class="neighbor-box prev-box">
-                <span class="neighbor-dir">⬅️ Kendinden Önceki</span>
+                <span class="neighbor-dir">← Kendinden Önceki</span>
                 <strong id="neighborPrevGreek" class="neighbor-greek" lang="el">—</strong>
                 <span id="neighborPrevMeaning" class="neighbor-meaning">Başlangıç</span>
               </button>
@@ -206,7 +204,7 @@
                 <span id="neighborCurrentGreek" lang="el">ἀγαθός</span>
               </div>
               <button id="neighborNextCard" class="neighbor-box next-box">
-                <span class="neighbor-dir">Kendinden Sonraki ➡️</span>
+                <span class="neighbor-dir">Kendinden Sonraki →</span>
                 <strong id="neighborNextGreek" class="neighbor-greek" lang="el">—</strong>
                 <span id="neighborNextMeaning" class="neighbor-meaning">Son</span>
               </button>
@@ -216,7 +214,7 @@
           <!-- 4. BÖLÜM: Kişisel Hafıza Notu (Tarayıcıya Kaydedilir) -->
           <div class="detail-card note-card">
             <div class="detail-card-header">
-              <span class="card-icon">✍️</span>
+              <span class="card-icon">✎</span>
               <h3>Kişisel Çağrışım Notum</h3>
               <span id="noteSavedIndicator" class="note-saved">Kaydedildi</span>
             </div>
@@ -230,7 +228,7 @@
     <section id="dictView" class="view-section">
       <div class="dict-controls">
         <div class="search-box">
-          <span class="search-icon">🔍</span>
+          <span class="search-icon">⌕</span>
           <input type="text" id="dictSearchInput" placeholder="Yunanca (λόγος), Latin harfleriyle (logos) veya Türkçe anlamıyla (söz, akıl) ara..." autocomplete="off" />
           <button id="clearSearchBtn" class="clear-search-btn hidden" title="Aramayı Temizle">✕</button>
         </div>
@@ -239,15 +237,15 @@
           <select id="statusFilterSelect" class="filter-select" aria-label="Ezber Durumu Filtresi">
             <option value="all">Tüm Durumlar</option>
             <option value="memorized">✓ Ezberlediklerim</option>
-            <option value="unmemorized">⏳ Henüz Ezberlemediklerim</option>
-            <option value="hard">🔥 Zorlandıklarım</option>
+            <option value="unmemorized">Henüz Ezberlemediklerim</option>
+            <option value="hard">! Zorlandıklarım</option>
           </select>
         </div>
       </div>
 
       <div class="dict-summary-bar">
         <span id="dictResultCount">0 kelime listeleniyor</span>
-        <span class="dict-tip">💡 Bir kelimeye tıklayarak doğrudan <strong>Hafız Çarkı</strong>'nda o sıraya gidebilirsiniz.</span>
+        <span class="dict-tip">Bir kelimeye tıklayarak doğrudan <strong>Hafız Çarkı</strong>'nda o sıraya gidebilirsiniz.</span>
       </div>
 
       <div class="dict-list" id="dictList">

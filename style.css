@@ -872,6 +872,12 @@ kbd {
   margin-bottom: 0.5rem;
 }
 
+.card-icon {
+  color: var(--gold-primary);
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
 .detail-card-header h3 {
   font-size: 0.88rem;
   font-weight: 700;

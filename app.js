@@ -233,8 +233,8 @@ function renderWheel() {
     const status = state.wordStatus[word.id];
     let statusHtml = '';
     if (status === 'memorized') statusHtml = '<span title="Ezberlendi" style="color:var(--accent-emerald)">✓</span>';
-    else if (status === 'hard') statusHtml = '<span title="Zorlanıyorum">🔥</span>';
-    else if (word.isCourse) statusHtml = '<span title="Ders Kelimesi">📚</span>';
+    else if (status === 'hard') statusHtml = '<span title="Zorlanıyorum" style="color:var(--accent-crimson)">!</span>';
+    else if (word.isCourse) statusHtml = '<span title="Ders Kelimesi" style="color:var(--gold-primary)">•</span>';
 
     item.innerHTML = `
       <span class="wheel-item-index">#${idx + 1}</span>
@@ -378,14 +378,14 @@ function renderDictionary() {
 
     let badgeHtml = '';
     if (st === 'memorized') badgeHtml = '<span class="pos-badge" style="background:var(--accent-emerald-bg);color:var(--accent-emerald)">✓ Ezberlendi</span>';
-    else if (st === 'hard') badgeHtml = '<span class="pos-badge" style="background:var(--accent-crimson-bg);color:var(--accent-crimson)">🔥 Zor</span>';
+    else if (st === 'hard') badgeHtml = '<span class="pos-badge" style="background:var(--accent-crimson-bg);color:var(--accent-crimson)">! Zor</span>';
 
     card.innerHTML = `
       <div class="dict-card-top">
         <div>
           <span class="rank-badge">#${index + 1}</span>
           <span class="pos-badge">${word.pos || 'Kelime'}</span>
-          ${word.isCourse ? '<span class="course-badge">📚 Ders</span>' : ''}
+          ${word.isCourse ? '<span class="course-badge">Ders</span>' : ''}
         </div>
         <div>${badgeHtml}</div>
       </div>
@@ -394,7 +394,7 @@ function renderDictionary() {
         <span class="detail-pron"> /${word.pronunciation || ''}/</span>
       </div>
       <div class="dict-card-short">${word.shortMeaning}</div>
-      <div class="dict-card-etym">🧠 ${word.etymology || ''}</div>
+      <div class="dict-card-etym">✦ ${word.etymology || ''}</div>
     `;
 
     card.addEventListener('click', () => {
@@ -453,7 +453,7 @@ function renderCurrentView() {
 function applyTheme(theme) {
   state.theme = theme;
   document.documentElement.setAttribute('data-theme', theme);
-  document.getElementById('themeIcon').textContent = theme === 'dark' ? '🌙' : '☀️';
+  document.getElementById('themeIcon').textContent = theme === 'dark' ? '☾' : '☼';
   saveLocalState();
 }
 
