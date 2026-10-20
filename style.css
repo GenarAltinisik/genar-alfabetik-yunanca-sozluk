@@ -404,22 +404,23 @@ kbd {
   align-items: stretch;
 }
 
-/* SOL PANEL: iOS DAİRESEL KELİME ÇARKI */
+/* SOL PANEL: iOS DAİRESEL KELİME ÇARKI (ÇERÇEVESİZ) */
 .wheel-panel {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 1rem;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0.25rem 0;
   display: flex;
   flex-direction: column;
-  box-shadow: var(--shadow-lg);
+  box-shadow: none;
 }
 
 .wheel-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.65rem;
+  margin-bottom: 0.5rem;
+  padding: 0 0.5rem;
 }
 
 .wheel-pos-badge {
@@ -438,7 +439,7 @@ kbd {
 }
 
 .wheel-step-btn {
-  background: var(--bg-card);
+  background: var(--bg-secondary);
   border: 1px solid var(--border-subtle);
   color: var(--text-primary);
   font-size: 0.8rem;
@@ -454,15 +455,15 @@ kbd {
   color: var(--gold-light);
 }
 
-/* 3D SİLİNDİRİK ÇARK GÖRÜNÜMÜ (iOS DRUM PICKER) */
+/* 3D SİLİNDİRİK ÇARK GÖRÜNÜMÜ (ÇERÇEVESİZ iOS DRUM PICKER) */
 .wheel-viewport {
   position: relative;
-  height: 470px;
-  background: var(--bg-wheel);
-  border-radius: 14px;
-  border: 1px solid var(--border-subtle);
+  height: 490px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
   overflow: hidden;
-  perspective: 950px;
+  perspective: 1000px;
   user-select: none;
   cursor: grab;
   outline: none;
@@ -475,65 +476,64 @@ kbd {
   cursor: grabbing;
 }
 
-.wheel-viewport:focus-visible {
-  border-color: var(--gold-primary);
-  box-shadow: 0 0 0 2px var(--gold-glow);
-}
-
-/* Üst ve Alt Silindirik Karartma */
+/* Üst ve Alt Silindirik Karartma (Ana Arka Plana Kaynaşan) */
 .wheel-fade {
   position: absolute;
   left: 0;
   right: 0;
-  height: 135px;
+  height: 150px;
   pointer-events: none;
   z-index: 4;
 }
 
 .wheel-fade-top {
   top: 0;
-  background: linear-gradient(to bottom, var(--bg-wheel) 8%, rgba(14, 18, 27, 0) 100%);
+  background: linear-gradient(to bottom, var(--bg-primary) 5%, rgba(11, 13, 19, 0) 100%);
 }
 
 .wheel-fade-bottom {
   bottom: 0;
-  background: linear-gradient(to top, var(--bg-wheel) 8%, rgba(14, 18, 27, 0) 100%);
+  background: linear-gradient(to top, var(--bg-primary) 5%, rgba(11, 13, 19, 0) 100%);
 }
 
 [data-theme="light"] .wheel-fade-top {
-  background: linear-gradient(to bottom, var(--bg-wheel) 8%, rgba(242, 237, 224, 0) 100%);
+  background: linear-gradient(to bottom, var(--bg-primary) 5%, rgba(247, 244, 235, 0) 100%);
 }
 
 [data-theme="light"] .wheel-fade-bottom {
-  background: linear-gradient(to top, var(--bg-wheel) 8%, rgba(242, 237, 224, 0) 100%);
+  background: linear-gradient(to top, var(--bg-primary) 5%, rgba(247, 244, 235, 0) 100%);
 }
 
-/* Tam Ortadaki Seçili Satır Çerçevesi (iOS Saat Çarkı Barı) */
+/* Tam Ortadaki Seçili Satır Vurgusu (Çerçevesiz İnce Altın Çizgi) */
 .wheel-center-highlight {
   position: absolute;
-  left: 12px;
-  right: 12px;
+  left: 0;
+  right: 0;
   top: 50%;
-  height: 74px;
+  height: 76px;
   transform: translateY(-50%);
-  background: var(--bg-highlight);
-  border-top: 1.5px solid var(--border-gold);
-  border-bottom: 1.5px solid var(--border-gold);
-  border-radius: 12px;
-  box-shadow: 0 0 28px var(--gold-glow);
+  background: linear-gradient(90deg, transparent 0%, var(--bg-highlight) 15%, var(--bg-highlight) 85%, transparent 100%);
+  border: none;
   pointer-events: none;
   z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 0.55rem;
 }
 
-.center-indicator-left,
-.center-indicator-right {
-  color: var(--gold-primary);
-  font-size: 0.75rem;
-  opacity: 0.85;
+.wheel-center-highlight::before,
+.wheel-center-highlight::after {
+  content: "";
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--border-gold) 20%, var(--border-gold) 80%, transparent 100%);
+}
+
+.wheel-center-highlight::before {
+  top: 0;
+}
+
+.wheel-center-highlight::after {
+  bottom: 0;
 }
 
 .wheel-drum {
@@ -547,21 +547,21 @@ kbd {
 /* Çarktaki Her Bir Kelime Satırı */
 .wheel-item {
   position: absolute;
-  left: 22px;
-  right: 22px;
+  left: 8px;
+  right: 8px;
   top: 50%;
-  height: 68px;
-  margin-top: -34px;
+  height: 72px;
+  margin-top: -36px;
   display: grid;
-  grid-template-columns: 44px 1.15fr 1.25fr 32px;
+  grid-template-columns: 44px 1.2fr 1.25fr;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0 0.85rem;
-  border-radius: 10px;
+  gap: 0.85rem;
+  padding: 0 0.75rem;
   backface-visibility: hidden;
-  transition: transform 0.26s cubic-bezier(0.2, 0.85, 0.25, 1),
-              opacity 0.26s cubic-bezier(0.2, 0.85, 0.25, 1),
-              filter 0.22s ease;
+  will-change: transform, opacity;
+  transition: transform 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.25s ease;
   cursor: pointer;
 }
 
@@ -570,34 +570,31 @@ kbd {
   font-weight: 600;
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
+  transition: color 0.3s ease;
 }
 
 .wheel-item-greek {
   font-family: var(--font-greek);
-  font-size: 1.35rem;
+  font-size: 1.4rem;
   font-weight: 700;
   color: var(--text-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  transition: font-size 0.2s, color 0.2s;
+  transform-origin: left center;
+  transition: transform 0.42s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease, text-shadow 0.3s ease;
 }
 
 .wheel-item-meaning {
-  font-size: 0.92rem;
+  font-size: 0.94rem;
   color: var(--text-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   border-left: 2px solid var(--border-subtle);
-  padding-left: 0.75rem;
-  transition: filter 0.2s, opacity 0.2s, color 0.2s;
-}
-
-.wheel-item-status {
-  display: flex;
-  justify-content: flex-end;
-  font-size: 0.85rem;
+  padding-left: 0.85rem;
+  transition: filter 0.25s ease, opacity 0.25s ease, color 0.3s ease, border-color 0.3s ease, transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: left center;
 }
 
 /* Ortadaki Aktif Kelime (Offset 0) */
@@ -611,15 +608,15 @@ kbd {
 }
 
 .wheel-item.is-center .wheel-item-greek {
-  font-size: 1.95rem;
   color: var(--gold-light);
-  text-shadow: 0 2px 12px var(--gold-glow);
+  transform: scale(1.28);
+  text-shadow: 0 2px 16px var(--gold-glow);
 }
 
 .wheel-item.is-center .wheel-item-meaning {
-  font-size: 1.05rem;
   font-weight: 600;
   color: var(--text-primary);
+  transform: scale(1.08);
   border-left-color: var(--gold-primary);
 }
 
@@ -1172,12 +1169,12 @@ kbd {
   }
 
   .wheel-item {
-    grid-template-columns: 36px 1fr 1.1fr 24px;
-    left: 10px;
-    right: 10px;
+    grid-template-columns: 36px 1.1fr 1.1fr;
+    left: 4px;
+    right: 4px;
   }
 
   .wheel-item.is-center .wheel-item-greek {
-    font-size: 1.6rem;
+    transform: scale(1.16);
   }
 }

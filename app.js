@@ -213,7 +213,25 @@ function setCurrentIndex(newIdx) {
   renderAlphabetBar();
 }
 
-function renderWheel() {
+let wheelDomMap = new Map();
+let lastRenderedPool = null;
+
+function computeWheelTransform(offset) {
+  const angleDeg = offset * 20;
+  const angleRad = (angleDeg * Math.PI) / 180;
+  const radiusY = 215;
+  const translateY = Math.sin(angleRad) * radiusY;
+  const translateZ = (Math.cos(angleRad) - 1) * 155;
+  const rotateX = -angleDeg;
+  const scale = offset === 0 ? 1 : Math.max(0.74, 1 - Math.abs(offset) * 0.068);
+  const opacity = offset === 0 ? 1 : Math.max(0, 1 - Math.abs(offset) * 0.22);
+  return {
+    transform: `translate3d(0, ${translateY.toFixed(1)}px, ${translateZ.toFixed(1)}px) rotateX(${rotateX.toFixed(1)}deg) scale(${scale.toFixed(3)})`,
+    opacity: opacity.toFixed(2)
+  };
+}
+
+function renderWheel(forceRebuild = false) {
   const drum = document.getElementById('wheelDrum');
   const posBadge = document.getElementById('wheelPositionBadge');
   const jumpInput = document.getElementById('jumpInput');
@@ -221,6 +239,12 @@ function renderWheel() {
   drum.classList.toggle('hide-meanings', state.hideMeanings);
   drum.classList.toggle('blur-next', state.blurNext);
   drum.classList.toggle('peeking', state.peeking);
+
+  if (lastRenderedPool !== state.pool || forceRebuild) {
+    drum.innerHTML = '';
+    wheelDomMap.clear();
+    lastRenderedPool = state.pool;
+  }
 
   if (activeWords.length === 0) {
     drum.innerHTML = `<div style="text-align:center; padding-top:200px; color:var(--text-secondary);">Bu havuzda henüz kelime yok.</div>`;
@@ -232,60 +256,72 @@ function renderWheel() {
   jumpInput.max = activeWords.length;
   jumpInput.value = state.currentIndex + 1;
 
-  drum.innerHTML = '';
-
-  // iOS Saat Çarkı: Ortadaki kelimenin üstünde 4 (-4..-1) ve altında 4 (+1..+4) kelime göster
   const VISIBLE_RANGE = 4;
+  const activeIndices = new Set();
+
   for (let offset = -VISIBLE_RANGE; offset <= VISIBLE_RANGE; offset++) {
     const idx = state.currentIndex + offset;
     if (idx < 0 || idx >= activeWords.length) continue;
+    activeIndices.add(idx);
 
     const word = activeWords[idx];
-    const item = document.createElement('div');
-    item.className = 'wheel-item';
-    if (offset === 0) item.classList.add('is-center');
-    if (offset > 0) item.classList.add('is-after');
-    if (offset < 0) item.classList.add('is-before');
+    let item = wheelDomMap.get(idx);
+    const isNew = !item;
 
-    // 3D Silindirik Geometri Hesabı (iOS Picker eğimi)
-    const angleDeg = offset * 19.5;
-    const angleRad = (angleDeg * Math.PI) / 180;
-    const radiusY = 205;
-    const translateY = Math.sin(angleRad) * radiusY;
-    const translateZ = (Math.cos(angleRad) - 1) * 145;
-    const rotateX = -angleDeg;
-    const scale = offset === 0 ? 1.02 : Math.max(0.76, 1 - Math.abs(offset) * 0.065);
-    const opacity = offset === 0 ? 1 : Math.max(0.18, 1 - Math.abs(offset) * 0.21);
-
-    item.style.transform = `translate3d(0, ${translateY.toFixed(1)}px, ${translateZ.toFixed(1)}px) rotateX(${rotateX.toFixed(1)}deg) scale(${scale.toFixed(3)})`;
-    item.style.opacity = opacity.toFixed(2);
-
-    const status = state.wordStatus[word.id];
-    let statusHtml = '';
-    if (status === 'memorized') statusHtml = '<span title="Ezberlendi" style="color:var(--accent-emerald)">✓</span>';
-    else if (status === 'hard') statusHtml = '<span title="Zorlanıyorum" style="color:var(--accent-crimson)">!</span>';
-    else if (word.isCourse) statusHtml = '<span title="Ders Kelimesi" style="color:var(--gold-primary)">•</span>';
-
-    item.innerHTML = `
-      <span class="wheel-item-index">#${idx + 1}</span>
-      <span class="wheel-item-greek" lang="el">${formatWordWithArticleHTML(word)}</span>
-      <span class="wheel-item-meaning">${word.shortMeaning}</span>
-      <span class="wheel-item-status">${statusHtml}</span>
-    `;
-
-    item.addEventListener('click', () => {
-      if (offset === 0) {
-        // Ortadaki kelimeye tıklanırsa gizli anlamı anlık aç/kapat
-        if (state.hideMeanings || state.blurNext) {
-          state.peeking = !state.peeking;
-          drum.classList.toggle('peeking', state.peeking);
+    if (isNew) {
+      item = document.createElement('div');
+      item.className = 'wheel-item';
+      item.innerHTML = `
+        <span class="wheel-item-index">#${idx + 1}</span>
+        <span class="wheel-item-greek" lang="el">${formatWordWithArticleHTML(word)}</span>
+        <span class="wheel-item-meaning">${word.shortMeaning}</span>
+      `;
+      item.addEventListener('click', () => {
+        if (state.currentIndex === idx) {
+          if (state.hideMeanings || state.blurNext) {
+            state.peeking = !state.peeking;
+            drum.classList.toggle('peeking', state.peeking);
+          }
+        } else {
+          setCurrentIndex(idx);
         }
-      } else {
-        setCurrentIndex(idx);
-      }
-    });
+      });
 
-    drum.appendChild(item);
+      // Yeni giren öğeyi silindirin bir basamak dışından başlat ki pürüzsüz kayarak girsin
+      const enterFromOffset = offset > 0 ? offset + 1.2 : offset < 0 ? offset - 1.2 : 0;
+      const initStyle = computeWheelTransform(enterFromOffset);
+      item.style.transition = 'none';
+      item.style.transform = initStyle.transform;
+      item.style.opacity = '0';
+      drum.appendChild(item);
+      wheelDomMap.set(idx, item);
+      // Reflow tetikle
+      void item.offsetHeight;
+      item.style.transition = '';
+    }
+
+    item.classList.toggle('is-center', offset === 0);
+    item.classList.toggle('is-after', offset > 0);
+    item.classList.toggle('is-before', offset < 0);
+
+    const targetStyle = computeWheelTransform(offset);
+    item.style.transform = targetStyle.transform;
+    item.style.opacity = targetStyle.opacity;
+  }
+
+  // Görünür aralıktan çıkan öğeleri silindirin dışına kaydırarak temizle
+  for (const [oldIdx, el] of wheelDomMap.entries()) {
+    if (!activeIndices.has(oldIdx)) {
+      wheelDomMap.delete(oldIdx);
+      const exitOffset = oldIdx < state.currentIndex ? -(VISIBLE_RANGE + 1.3) : (VISIBLE_RANGE + 1.3);
+      const exitStyle = computeWheelTransform(exitOffset);
+      el.style.transform = exitStyle.transform;
+      el.style.opacity = '0';
+      el.style.pointerEvents = 'none';
+      setTimeout(() => {
+        if (el.parentNode) el.parentNode.removeChild(el);
+      }, 420);
+    }
   }
 }
 
