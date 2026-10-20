@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Genar'ın Alfabetik Eski Yunanca Sözlüğü | Sözlük Hafızı</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Gentium+Plus:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Üst Navigasyon ve Kontrol Barı -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-emblem">ΑΩ</div>
+        <div class="brand-text">
+          <h1>Genar'ın Eski Yunanca Sözlüğü</h1>
+          <span class="brand-subtitle">Alfabetik Zincir &amp; Sözlük Hafızı Sistemi</span>
+        </div>
+      </div>
+
+      <!-- Kelime Havuzu Seçici (Ders Kelimelerim vs Genel Sözlük) -->
+      <div class="pool-switcher" role="group" aria-label="Kelime Havuzu Seçimi">
+        <button id="poolCourseBtn" class="pool-btn" data-pool="course" title="Sadece ders ve sınavlarda sorumlu olduğum kelimeler">
+          <span class="pool-icon">📚</span>
+          <span>Ders / Sınav Kelimelerim</span>
+          <span id="courseCountBadge" class="badge">0</span>
+        </button>
+        <button id="poolAllBtn" class="pool-btn active" data-pool="all" title="Temel Eski Yunanca sözlük ve ders kelimeleri bir arada">
+          <span class="pool-icon">🏛️</span>
+          <span>Genel Sözlük</span>
+          <span id="allCountBadge" class="badge">0</span>
+        </button>
+      </div>
+
+      <!-- Ana Görünüm Modu Seçici (Hafız Modu vs Sözlük Modu) -->
+      <div class="mode-switcher" role="group" aria-label="Çalışma Modu Seçimi">
+        <button id="modeHafizBtn" class="mode-btn active" data-mode="hafiz">
+          <span>🎡 Hafız Modu</span>
+        </button>
+        <button id="modeDictBtn" class="mode-btn" data-mode="dict">
+          <span>📖 Sözlük Modu</span>
+        </button>
+      </div>
+
+      <!-- İlerleme Özeti & Tema -->
+      <div class="topbar-actions">
+        <div class="progress-pill" title="Ezberlenen kelime oranı">
+          <span class="progress-dot"></span>
+          <span id="memorizedStatsText">0 / 0 Ezberlendi</span>
+        </div>
+        <button id="themeToggleBtn" class="icon-btn" title="Temayı Değiştir (Koyu / Açık)">
+          <span id="themeIcon">🌙</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Alfabe Hızlı Atlama Şeridi (Α - Ω) -->
+  <nav class="alphabet-bar" aria-label="Yunan Alfabesi Hızlı Atlama">
+    <div class="alphabet-inner" id="alphabetBar">
+      <!-- JS tarafından Α-Ω harfleri doldurulur -->
+    </div>
+  </nav>
+
+  <!-- ANA İÇERİK ALANI -->
+  <main class="main-container">
+
+    <!-- ==================== 1. HAFIZ MODU (iOS ÇARK + BÜYÜK DETAY KUTUSU) ==================== -->
+    <section id="hafizView" class="view-section active">
+      <!-- Hafız Modu Üst Kontrol Çubuğu (Gizleme / Bulanıklaştırma / Sıra Kontrolü) -->
+      <div class="hafiz-toolbar">
+        <div class="toolbar-left">
+          <label class="toggle-chip" title="Çarktaki Türkçe anlamları gizler (Boşluk tuşuyla anlık açabilirsiniz)">
+            <input type="checkbox" id="hideMeaningsToggle" />
+            <span class="chip-box"></span>
+            <span>🙈 Anlamları Gizle</span>
+          </label>
+          <label class="toggle-chip" title="Sıradaki (alt kısımdaki) kelimeleri bulanıklaştırır, alfabetik sırayı tahmin etmenizi sağlar">
+            <input type="checkbox" id="blurNextToggle" />
+            <span class="chip-box"></span>
+            <span>🌫️ Sonraki Kelimeleri Bulanıklaştır</span>
+          </label>
+          <button id="peekBtn" class="peek-btn" title="Gizli anlamı veya bulanık kelimeleri anlık göster (Kısayol: Boşluk Tuşu)">
+            👁️ Anlık Göster <kbd>Boşluk</kbd>
+          </button>
+        </div>
+
+        <div class="toolbar-right">
+          <span class="wheel-hint">💡 Fare tekerleği, yön tuşları <kbd>↑</kbd><kbd>↓</kbd> veya parmakla kaydırarak çarkı çevirin</span>
+        </div>
+      </div>
+
+      <!-- Yan Yana Yerleşim: Sol = Dairesel Kelime Çarkı, Sağ = Büyük Detay Kutucuğu -->
+      <div class="hafiz-split-layout">
+
+        <!-- SOL: iOS Saat Çarkı (3D Drum Picker) -->
+        <div class="wheel-panel">
+          <div class="wheel-header">
+            <span id="wheelPositionBadge" class="wheel-pos-badge">Sıra #1 / 1</span>
+            <div class="wheel-nav-btns">
+              <button id="prevWordBtn" class="wheel-step-btn" title="Önceki Kelime (Yukarı Ok)">▲ Önceki</button>
+              <button id="nextWordBtn" class="wheel-step-btn" title="Sonraki Kelime (Aşağı Ok)">▼ Sonraki</button>
+            </div>
+          </div>
+
+          <div class="wheel-viewport" id="wheelViewport" tabindex="0" aria-label="Alfabetik Kelime Çarkı">
+            <!-- Üst ve Alt Karartma Gradyanları (Silindirik Derinlik Hissi) -->
+            <div class="wheel-fade wheel-fade-top"></div>
+            <div class="wheel-fade wheel-fade-bottom"></div>
+
+            <!-- Tam Ortadaki Seçim Çerçevesi (iOS Picker Highlight Bar) -->
+            <div class="wheel-center-highlight">
+              <span class="center-indicator-left">▶</span>
+              <span class="center-indicator-right">◀</span>
+            </div>
+
+            <!-- 3D Silindirik Öğelerin Dizildiği Alan -->
+            <div class="wheel-drum" id="wheelDrum">
+              <!-- JS ile -4'ten +4'e kadar olan kelimeler ve paralel anlamları buraya çizilir -->
+            </div>
+          </div>
+
+          <div class="wheel-footer">
+            <div class="chain-Jump">
+              <label for="jumpInput">Sıraya Git:</label>
+              <input type="number" id="jumpInput" min="1" value="1" class="jump-input" />
+              <button id="randomWordBtn" class="secondary-btn" title="Rastgele bir kelimeye git">🎲 Rastgele</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SAĞ: Seçili Kelimenin Büyük Detay Kutucuğu -->
+        <div class="detail-panel" id="detailPanel">
+          <!-- Üst Başlık ve Ezber Durumu -->
+          <div class="detail-header">
+            <div class="detail-title-group">
+              <div class="detail-badges">
+                <span id="detailRankBadge" class="rank-badge">#1</span>
+                <span id="detailLetterBadge" class="letter-badge">Α</span>
+                <span id="detailPosBadge" class="pos-badge">İsim</span>
+                <span id="detailCourseBadge" class="course-badge hidden">📚 Ders/Sınav</span>
+              </div>
+              <h2 id="detailGreekWord" class="detail-greek-word" lang="el">ἀγαθός</h2>
+              <div class="detail-submeta">
+                <span id="detailFullForm" class="detail-dict-form" lang="el">ἀγαθός, -ή, -όν</span>
+                <span class="meta-sep">•</span>
+                <span id="detailPronunciation" class="detail-pron">/agathós/</span>
+              </div>
+            </div>
+
+            <div class="detail-status-actions">
+              <button id="markMemorizedBtn" class="status-btn" data-status="memorized" title="Bu kelimeyi ezberledim olarak işaretle (Kısayol: E)">
+                <span class="status-icon">✓</span>
+                <span id="memorizedBtnText">Ezberledim</span>
+              </button>
+              <button id="markHardBtn" class="status-btn status-hard" data-status="hard" title="Zorlanıyorum / Tekrar et (Kısayol: Z)">
+                <span>🔥 Zor</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Kısa Paralel Anlam Özeti -->
+          <div class="detail-short-banner">
+            <span class="banner-label">Temel Anlamı:</span>
+            <span id="detailShortMeaning" class="banner-value">iyi, soylu, erdemli, yararlı</span>
+          </div>
+
+          <!-- 1. BÖLÜM: Detaylı Anlamlar -->
+          <div class="detail-card">
+            <div class="detail-card-header">
+              <span class="card-icon">📜</span>
+              <h3>Detaylı Anlamlar &amp; Kullanım Nüansları</h3>
+            </div>
+            <div id="detailFullMeanings" class="detail-card-body">
+              <!-- JS ile doldurulur -->
+            </div>
+          </div>
+
+          <!-- 2. BÖLÜM: Etimoloji & Çağrışım (Hafıza Çengeli) -->
+          <div class="detail-card etymology-card">
+            <div class="detail-card-header">
+              <span class="card-icon">🧠</span>
+              <h3>Etimoloji &amp; Çağrışım (Hafıza İpucu)</h3>
+            </div>
+            <div id="detailEtymology" class="detail-card-body">
+              <!-- JS ile doldurulur -->
+            </div>
+          </div>
+
+          <!-- 3. BÖLÜM: Alfabetik Zincir Komşuları (Önceki & Sonraki Kelime Bağlantısı) -->
+          <div class="detail-card chain-card">
+            <div class="detail-card-header">
+              <span class="card-icon">🔗</span>
+              <h3>Alfabetik Hafıza Zinciri (Komşu Kelimeler)</h3>
+            </div>
+            <div class="chain-neighbors">
+              <button id="neighborPrevCard" class="neighbor-box prev-box">
+                <span class="neighbor-dir">⬅️ Kendinden Önceki</span>
+                <strong id="neighborPrevGreek" class="neighbor-greek" lang="el">—</strong>
+                <span id="neighborPrevMeaning" class="neighbor-meaning">Başlangıç</span>
+              </button>
+              <div class="chain-current-dot">
+                <span id="neighborCurrentGreek" lang="el">ἀγαθός</span>
+              </div>
+              <button id="neighborNextCard" class="neighbor-box next-box">
+                <span class="neighbor-dir">Kendinden Sonraki ➡️</span>
+                <strong id="neighborNextGreek" class="neighbor-greek" lang="el">—</strong>
+                <span id="neighborNextMeaning" class="neighbor-meaning">Son</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 4. BÖLÜM: Kişisel Hafıza Notu (Tarayıcıya Kaydedilir) -->
+          <div class="detail-card note-card">
+            <div class="detail-card-header">
+              <span class="card-icon">✍️</span>
+              <h3>Kişisel Çağrışım Notum</h3>
+              <span id="noteSavedIndicator" class="note-saved">Kaydedildi</span>
+            </div>
+            <textarea id="personalNoteInput" class="note-textarea" rows="2" placeholder="Bu kelimeyi hatırlamak için kendi kurduğun ipucunu veya ders notunu buraya yazabilirsin (otomatik kaydedilir)..."></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 2. NORMAL SÖZLÜK MODU ==================== -->
+    <section id="dictView" class="view-section">
+      <div class="dict-controls">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="dictSearchInput" placeholder="Yunanca (λόγος), Latin harfleriyle (logos) veya Türkçe anlamıyla (söz, akıl) ara..." autocomplete="off" />
+          <button id="clearSearchBtn" class="clear-search-btn hidden" title="Aramayı Temizle">✕</button>
+        </div>
+
+        <div class="dict-filters">
+          <select id="statusFilterSelect" class="filter-select" aria-label="Ezber Durumu Filtresi">
+            <option value="all">Tüm Durumlar</option>
+            <option value="memorized">✓ Ezberlediklerim</option>
+            <option value="unmemorized">⏳ Henüz Ezberlemediklerim</option>
+            <option value="hard">🔥 Zorlandıklarım</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="dict-summary-bar">
+        <span id="dictResultCount">0 kelime listeleniyor</span>
+        <span class="dict-tip">💡 Bir kelimeye tıklayarak doğrudan <strong>Hafız Çarkı</strong>'nda o sıraya gidebilirsiniz.</span>
+      </div>
+
+      <div class="dict-list" id="dictList">
+        <!-- JS ile sözlük kartları/satırları buraya çizilir -->
+      </div>
+    </section>
+
+  </main>
+
+  <script src="words.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
