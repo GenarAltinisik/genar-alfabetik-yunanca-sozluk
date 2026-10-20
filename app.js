@@ -217,11 +217,11 @@ let wheelDomMap = new Map();
 let lastRenderedPool = null;
 
 function computeWheelTransform(offset) {
-  const angleDeg = offset * 20;
+  const angleDeg = offset * 19.5;
   const angleRad = (angleDeg * Math.PI) / 180;
-  const radiusY = 215;
+  const radiusY = 172;
   const translateY = Math.sin(angleRad) * radiusY;
-  const translateZ = (Math.cos(angleRad) - 1) * 155;
+  const translateZ = (Math.cos(angleRad) - 1) * 140;
   const rotateX = -angleDeg;
   const scale = offset === 0 ? 1 : Math.max(0.74, 1 - Math.abs(offset) * 0.068);
   const opacity = offset === 0 ? 1 : Math.max(0, 1 - Math.abs(offset) * 0.22);
