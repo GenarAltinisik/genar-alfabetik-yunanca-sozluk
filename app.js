@@ -33,6 +33,9 @@ function formatWordWithArticlePlain(word) {
     return `${preArt} ${word.greek}`;
   }
   if (word.pos && word.pos.includes('Sıfat')) {
+    if (word.fullForm && !word.fullForm.startsWith(word.greek)) {
+      return `${word.greek} (${word.fullForm})`;
+    }
     return word.fullForm || word.greek;
   }
   return word.greek;
@@ -48,8 +51,11 @@ function formatWordWithArticleHTML(word) {
     return `<span class="art-inline">${preArt}</span> ${word.greek}`;
   }
   if (word.pos && word.pos.includes('Sıfat') && word.fullForm && word.fullForm !== word.greek) {
-    const rest = word.fullForm.slice(word.greek.length);
-    return `${word.greek}<span class="adj-endings">${rest}</span>`;
+    if (word.fullForm.startsWith(word.greek)) {
+      const rest = word.fullForm.slice(word.greek.length);
+      return `${word.greek}<span class="adj-endings">${rest}</span>`;
+    }
+    return `${word.greek} <span class="adj-endings">(${word.fullForm})</span>`;
   }
   return word.greek;
 }
